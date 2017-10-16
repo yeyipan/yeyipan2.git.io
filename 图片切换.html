@@ -1,0 +1,225 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>切换图片</title>
+    <style>
+        *{
+            margin: 0;
+            padding: 0;
+            list-style: none;
+        }
+        body{
+            font-size: 14px;
+        }
+        .roomBox{
+            width: 686px;
+            margin: 20px auto 0 auto;
+        }
+        .roomBox .roomPic{
+            border: 1px solid #dfdfdf;
+            width: 684px;
+            height: 394px;
+            background: url(./img/loading.gif) no-repeat 50% 50%;
+        }
+        .roomBox .sliderBox{
+            height: 76px;
+            margin-top: 7px;
+            overflow: hidden;
+        }
+        .roomBox .sliderBox .arrow_btn{
+            width: 38px;
+            height: 76px;
+            background: url(./img/arrow-btn.png) no-repeat;
+            cursor: pointer;
+        }
+        .roomBox #btn_left{
+            float: left;
+        }
+        /* 禁止点击 */
+        .roomBox #btn_left.unclick{
+            background-position: 0 -76px;
+        }
+        .roomBox #btn_right{
+            float: right;
+            background-position: -38px 0;
+        }
+        .roomBox #btn_right.runclick{
+            background-position: -38px -76px;
+        }
+
+        /* 中间的缩略图 */
+        .sliderBox .slider{
+            float: left;
+            height: 76px;
+            width: 606px;
+            margin-left: 4px;
+            position: relative;
+            overflow: hidden;
+            display: inline;
+        }
+        .sliderBox .slider ul{
+            position: absolute;
+        }
+        .sliderBox .slider li{
+            float: left;
+            width: 121px;
+            text-align: center;
+        }
+        .sliderBox .slider li img{
+            border: 1px solid white;
+        }
+        .sliderBox .slider li.current img{
+            border-color: #555353;
+        }
+
+    </style>
+</head>
+<body>
+<h1>>a</h1>
+    <div class="roomBox">
+        <div class="roomPic">
+            <img src="./img/3427.jpg" alt="">
+        </div>
+        <div class="sliderBox">
+            <div id="btn_left" class="arrow_btn unclick"></div>
+            <div class="slider" id="thumbNail">
+                <ul>
+                    <li class="current">
+                        <a href="./img/3427.jpg">
+                            <img src="./img/14fd.jpg" alt="">
+                        </a>
+                    </li>
+                    <li>
+                        <a href="./img/26547.jpg">
+                            <img src="./img/41356a.jpg" alt="">
+                        </a>
+                    </li>
+                    <li>
+                        <a href="./img/52347.jpg">
+                            <img src="./img/41a.jpg" alt="">
+                        </a>
+                    </li>
+                    <li>
+                        <a href="./img/23463.jpg">
+                            <img src="./img/234fa.jpg" alt="">
+                        </a>
+                    </li>
+                    <li>
+                        <a href="./img/3427.jpg">
+                            <img src="./img/14fd.jpg" alt="">
+                        </a>
+                    </li>
+                    <li>
+                        <a href="./img/3247.jpg">
+                            <img src="./img/412saf.jpg" alt="">
+                        </a>
+                    </li>
+                    <li>
+                        <a href="./img/2153.jpg">
+                            <img src="./img/432sadf.jpg" alt="">
+                        </a>
+                    </li>
+                    <li>
+                        <a href="./img/52347.jpg">
+                            <img src="./img/41a.jpg" alt="">
+                        </a>
+                    </li>
+                    <li>
+                        <a href="./img/26547.jpg">
+                            <img src="./img/41356a.jpg" alt="">
+                        </a>
+                    </li>
+                </ul>
+            </div>
+            <div id="btn_right" class="arrow_btn"></div>
+        </div>
+    </div>
+    <script src="./js/jquery.js"></script>
+    <script>
+        // 点击小图切换大图
+        $('#thumbNail li a').click(function(){
+            // 利用淡入淡出做出切换效果
+            $('.roomPic img').fadeOut('fast').fadeIn('fast')
+            .attr({
+                src:$(this).attr('href'),
+                title:'全新奥迪A4L',
+            });
+            // 先移除上次的.current样式类
+            $('#thumbNail li.current').removeClass('current');
+            // 给当前点击的添加.current样式类
+            $(this).parent().addClass('current');
+            // 阻止事件的默认行为和冒泡
+            return false;
+        });
+
+        // 控制小图左右滚动
+
+        // 点击次数
+        var slideCount = 0;
+
+        //图片个数
+        var imgCount = $('.slider ul li').length;
+        
+        // 计算 ul 的宽度
+        $('.slider ul').width(imgCount * $('.slider ul li').width());
+
+        // 如果刚开始图片个数小于等于5 下一张是不能点击的
+        if(imgCount <= 5){
+            $('#btn_right').css('cursor','default')
+            .addClass('runclick');
+        }
+
+        // 点击下一张
+        $('#btn_right').click(function(){
+            // 图片点到头 或者小于等于5 都不能继续点
+            if(imgCount <= 5 || slideCount >= imgCount-5){
+                return false;
+            }
+            slideCount ++;
+            $('.slider ul').animate({
+                left:'-='+$('.slider ul li').width()
+            },'fast');
+            checkState();
+        })
+
+        // 点击上一张
+        $('#btn_left').click(function(){
+            // 图片点到起始点就不能继续点
+            if(slideCount <= 0){
+                return false;
+            }
+            slideCount --;
+            $('.slider ul').animate({
+                left:'+='+$('.slider ul li').width()
+            },'fast');
+            checkState();
+        })
+
+        // 检测每次点击完毕后 处于什么状态
+        function checkState(){
+            // 到达最后一张的状态
+            if(slideCount >= imgCount-5){
+                $('#btn_right').css('cursor','default')
+                .addClass('runclick');
+            }
+
+            // 处于第二张图片到倒数第二张时的状态
+            if(slideCount > 0 && slideCount < imgCount - 5){
+                $('#btn_right').css('cursor','pointer')
+                .removeClass('runclick');
+                $('#btn_left').css('cursor','pointer')
+                .removeClass('unclick');
+            };
+
+            // 到达第一张的状态
+            if(slideCount <= 0){
+                $('#btn_left').css('cursor','default')
+                .addClass('unclick');
+            }
+        }
+    </script>
+</body>
+</html>
