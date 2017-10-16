@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>商品筛选1</title>
+    <style>
+        div{
+            width: 768px;
+        }
+        ul{
+            list-style: none;
+        }
+        ul li{
+            overflow: hidden;
+            border-bottom: 1px dashed #dfdfdf;
+            font-size: 12px;
+            /* 设置或检索对象的缩放比例。 */
+            zoom: 1;
+        }
+        ul li .name{
+            float: left;
+            width: 100px;
+            height: 22px;
+            padding-top: 15px;
+            font-weight: bold;
+            text-align: right;
+        }
+        ul li .intro{
+            float: left;
+            width: 620px;
+            padding-top: 15px;
+        }
+        ul li .intro a{
+            display: inline-block;
+            margin: 0 10px 20px 0;
+            text-decoration: none;
+            color: #3366cc;
+        }
+        ul li .intro a:hover{
+            color: #fff;
+            background-color: #3399cc;
+        }
+        ul li.chosed .intro span{
+            margin-left: 10px;
+            padding: 5px;
+            color: #ff6600;
+            border: 1px solid #ff6600;
+            display: none;
+        }
+        ul li.chosed .intro a.clear{
+            margin-left: 10px;
+            color: #ff6600;
+            font-weight: bold;
+            border: none;
+            background: none;
+        }
+        ul li.chosed .intro span em{
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            line-height: 20px;
+            text-align: center;
+            background-color: #ff6600;
+            color: #fff;
+            font-size: 14px;
+            font-weight: bold;
+            font-style: normal;
+            cursor: pointer;
+        }
+        .selected{
+            color: #fff;
+            background-color: #3399cc;
+        }
+    </style>
+</head>
+<body>
+    <div>
+        <ul>
+            <li>
+                <span class="name">品 牌 : </span>
+                <span class="intro">
+                    <a href="javascript:;">苹果</a>
+                    <a href="javascript:;">小米</a>
+                    <a href="javascript:;">三星</a>
+                    <a href="javascript:;">华为</a>
+                    <a href="javascript:;">联想</a>
+                    <a href="javascript:;">中兴</a>
+                    <a href="javascript:;">海信</a>
+                    <a href="javascript:;">酷派</a>
+                    <a href="javascript:;">HTC</a>
+                    <a href="javascript:;">索尼</a>
+                    <a href="javascript:;">一加</a>
+                    <a href="javascript:;">锤子</a>
+                </span>
+            </li>
+            <li>
+                <span class="name">价格范围 : </span>
+                <span class="intro">
+                    <a href="javascript:;">1-499</a>
+                    <a href="javascript:;">500-999</a>
+                    <a href="javascript:;">1000-1999</a>
+                    <a href="javascript:;">2000-2999</a>
+                    <a href="javascript:;">3000-4999</a>
+                    <a href="javascript:;">5000以上</a>
+                </span>
+            </li>
+            <li>
+                <span class="name">操作系统 : </span>
+                <span class="intro">
+                    <a href="javascript:;">iOS</a>
+                    <a href="javascript:;">安卓</a>
+                    <a href="javascript:;">塞班</a>
+                    <a href="javascript:;">阿里云</a>
+                </span>
+            </li>
+            <li>
+                <span class="name">优惠活动 : </span>
+                <span class="intro">
+                    <a href="javascript:;">存话费送手机</a>
+                    <a href="javascript:;">买手机送话费</a>
+                    <a href="javascript:;">老用户优惠购机（支持合约到期提前续约）</a>
+                    <a href="javascript:;">只买手机</a>
+                    <a href="javascript:;">分期付款</a>
+                </span>
+            </li>
+            <li>
+                <span class="name">特点 : </span>
+                <span class="intro">
+                    <a href="javascript:;">双卡双待</a>
+                    <a href="javascript:;">千元智能机</a>
+                    <a href="javascript:;">大屏（4.0寸以上)</a>
+                </span>
+            </li>
+            <li class="chosed" id="chosed">
+                <span class="name">您已选择 : </span>
+                <span class="intro">
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                    
+                </span>
+            </li>
+        </ul>
+    </div>
+    <script src="./js/jquery.js"></script>
+    <script>
+        $(function(){
+            $('li .intro a').click(function(){
+                var $chosed = $('.chosed .intro');
+                // closest()从元素本身开始，逐级向上级元素匹配，并返回最先匹配的元素
+                var liIndex = $(this).closest('li').index();
+                // 定义查找到的文本内容
+                var txt = $(this).text() + "<em>x</em>";
+
+                // 给选中内容添加选中效果
+                $(this).siblings().removeClass('selected').css('color','#3366cc')
+                .end().addClass('selected').css('color','#fff');
+
+                // 把每个li里面的a的内容根据li的索引插入到对应索引的span
+                // 每个li只能有一个span
+                $chosed.find('span').eq(liIndex).html(txt).css('display','inline-block');
+
+                // 关闭span
+                $('.chosed .intro em').click(function(){
+                    var index = $(this).parent('span').index();
+                    console.log(index)
+                    if(index != -1){
+                        $("li:not('.chosed')").eq(index).find('.intro a')
+                        .removeClass('selected').css('color','#3366cc');
+                    }
+                    
+                    var lenth1 = $chosed.find('span').not(':empty').length;
+                    if(lenth1 == 0){
+                       $('#clear').remove();
+                    }
+                    $(this).parent('span').empty().css('display','none');
+
+                    
+                });
+
+                // 当span的个数大于2就会出现clear按钮 清除所有的span
+                var lenth2 = $chosed.find('span').not(':empty').length;
+                if(lenth2 > 2){
+                    var clearBtn = "<a href='javascript:;' id='clear' class='clear'>清除筛选条件</a>";
+                    $('#clear').remove();
+                    $('.chosed .intro').append(clearBtn);
+                };
+                
+                // 清除所有的筛选条件
+                $('a.clear').click(function(){
+                    $('.chosed .intro span').text('').css('display','none');
+                    
+                    $("li:not('.chosed')").find('.intro a')
+                    .removeClass('selected').css('color','#3366cc');
+
+                    $(this).remove();
+                })
+                
+            })
+        })
+    </script>
+</body>
+</html>
