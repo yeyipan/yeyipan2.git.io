@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>倒计时1</title>
+</head>
+<body>
+    <div id="timer"></div>
+    <script>
+        var target_time = new Date('2017-10-01 12:00:00').getTime();
+        var now = new Date().getTime();
+        var t = Math.floor((target_time - now) / 1000);
+
+        var MIN = 60;
+        var HOUR = MIN * 60; //60 * 60
+        var DAY = HOUR * 24;  // 24*60*60
+
+        function num(n){
+            var str = '0' + (n > 0 ? n : 0);
+            return str.substr(-2);
+        }
+        function timer(){
+            var days = Math.floor(t / DAY);
+            var hours = Math.floor(t % DAY / HOUR);
+            var minutes = Math.floor(t % HOUR / MIN);
+            var seconds = Math.floor(t % MIN);
+
+            if(t < 60){
+                // 小于60s
+                var content = '刚刚发布';
+            }else if(days <= 1){
+                // 如果是今天倒计时 就只用显示小时 分钟 秒
+                var content = num(hours) + '小时' + num(minutes) + '分钟' + num(seconds) + '秒'
+            }else{
+                // 不符合上面两种情况 就显示所有
+                var content = num(days) + '天' + num(hours) + '小时'
+                + num(minutes) + '分钟' + seconds + '秒';
+            }
+            document.getElementById('timer').innerHTML = content;
+        }
+        function change(){
+            timer();
+            setTimeout(function(){
+                t -= 1;
+                timer();
+                if(t > 0){
+                    // arguments.callee表示引用当前正在执行的函数，
+                    // 或者说是调用arguments.callee的函数对象的引用
+                    setTimeout(arguments.callee,1000)
+                }
+            },1000)
+        };
+        change();
+    </script>
+</body>
+</html>
