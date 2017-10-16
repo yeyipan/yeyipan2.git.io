@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>360°旋转</title>
+    <style>
+        html,body,ul,li{
+            margin: 0;
+            padding: 0;
+            list-style: none;
+        }
+        .container{
+            width: 400px;
+            height: 255px;
+            border: 5px solid #ccc;
+            margin: 50px auto;
+            overflow: hidden;
+        }
+        .container ul{
+            width: 400px;
+            height: 255px; 
+        }
+        .container ul li{
+            display: none;
+        }
+        .container ul li img{
+            display: block;
+            width: 400px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <ul class="list">
+            <li style="display:block"><img src="./img/image1_1.jpg" alt="鞋子"></li>
+            <li><img src="./img/image1_2.jpg" alt="鞋子"></li>
+            <li><img src="./img/image1_3.jpg" alt="鞋子"></li>
+            <li><img src="./img/image1_4.jpg" alt="鞋子"></li>
+            <li><img src="./img/image1_5.jpg" alt="鞋子"></li>
+            <li><img src="./img/image1_6.jpg" alt="鞋子"></li>
+            <li><img src="./img/image1_7.jpg" alt="鞋子"></li>
+            <li><img src="./img/image1_8.jpg" alt="鞋子"></li>
+            <li><img src="./img/image1_9.jpg" alt="鞋子"></li>
+            <li><img src="./img/image1_10.jpg" alt="鞋子"></li>
+            <li><img src="./img/image1_11.jpg" alt="鞋子"></li>
+            <li><img src="./img/image1_12.jpg" alt="鞋子"></li>
+            <li><img src="./img/image1_13.jpg" alt="鞋子"></li>
+            <li><img src="./img/image1_14.jpg" alt="鞋子"></li>
+            <li><img src="./img/image1_15.jpg" alt="鞋子"></li>
+            <li><img src="./img/image1_16.jpg" alt="鞋子"></li>
+            <li><img src="./img/image1_17.jpg" alt="鞋子"></li>
+            <li><img src="./img/image1_18.jpg" alt="鞋子"></li>
+        </ul>
+    </div>
+    <script src="./js/jquery.js"></script>
+    <script>
+        // 获取.list盒子距离文档左边的距离(相当于left值)
+        var list_x = $('.list').offset().left;
+        // 获取.list盒子宽度的一半
+        var list_half_w = $('.list').width() / 2;
+
+        // 获取中心点坐标
+        var center_x = list_x + list_half_w;
+
+        // 把盒子宽度的一半分成了18 小份
+        var avg = list_half_w / 18;
+        // 给.list添加鼠标移动事件
+        $('.list').mousemove(function(e){
+            // 获取鼠标移动的位置相对于整个document的坐标
+            // console.log(e)
+            var page_x = e.pageX;
+            var page_y = e.pageY;
+
+            // 判断鼠标是在.list盒子左半部分移动还是右半部分
+            if(center_x - page_x > 0){
+                // 左边 0 1 2....17
+                var index = Math.ceil((center_x-page_x) / avg);
+                $('.list li').eq(18 - index).show().siblings().hide();
+            }else{
+                // 右边 
+                var index = Math.floor((page_x - center_x) / avg);
+                $('.list li').eq(index).show().siblings().hide();
+            }
+        })
+    </script>
+</body>
+</html>
