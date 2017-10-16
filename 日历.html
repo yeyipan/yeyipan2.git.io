@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>日历</title>
+</head>
+<body>
+    <script>
+        function Calender(month){
+            var div
+            // 定义一个属性 表示当前要展示的月份
+            this.currentMonth = month || new Date();
+
+            // 将当前月份的日期设置为1号
+            this.currentMonth.setDate(1);
+            // console.log(this.currentMonth);
+            // 如果调用者传递了month参数 那么this.currentMonth = month
+            // 如果调用者没有传值或者传了被认为false的值 那么this.currentMonth = new Date()
+
+            // 获取当前展示月份的第一天
+            this.getFirstDate = function(){
+                // 获取当前展示月份1号是星期几
+                var week = this.currentMonth.getDay();
+                if(week == 0){
+                    week = 7
+                }
+                week = week - 2;
+                // console.log(week);
+                var firstDate = new Date(this.currentMonth);
+                // 得到星期一是几月几号
+                firstDate.setDate(-week);
+                // console.log(firstDate);
+                return firstDate;
+            }
+
+            // 展示日历的主体部分
+            this.showCalenderMain = function(){
+                div = document.createElement('div');
+                div.style.width = '450px';
+                div.style.minHeight = '100px';
+                div.style.backgroundColor = 'black';
+                document.body.appendChild(div);
+            }
+
+            // 展示日历的表头部分
+            this.showHeader = function(){
+                var table = document.createElement('table');
+                table.style.width = '100%';
+                var tr = table.insertRow();
+                function getWeekName(week){
+                    switch(week){
+                        case 1:
+                        return '一';
+                        case 2: 
+                        return '二';
+                        case 3:
+                        return '三';
+                        case 4: 
+                        return '四';
+                        case 5:
+                        return '五';
+                        case 6: 
+                        return '六';
+                        case 7: 
+                        return '七';
+                    }
+                }
+                for(var i = 1;i <= 7;i++){
+                    var td = tr.insertCell();
+                    td.style.color = 'white';
+                    td.style.textAlign = 'center';
+                    td.innerHTML = getWeekName(i);
+                }
+                div.appendChild(table);
+            };
+
+            //  展示日历的主体部分
+            this.showBody = function(){
+                var firstDate = this.getFirstDate().getTime();
+                var table = document.createElement('table');
+                table.style.width = '100%';
+                for(var i = 0;i < 6;i++){
+                    var tr = table.insertRow();
+                    for(var j = 0;j < 7;j++){
+                        var td = tr.insertCell();
+                        td.style.textAlign = 'center';
+                        td.style.color = 'white';
+                        td.style.height = '20px';
+
+                        var n = i*7+j;
+                        var cellDate = new Date(firstDate + n*24*60*60*1000);
+                        td.innerHTML = cellDate.getDate();
+
+                        if(cellDate.getMonth() != this.currentMonth.getMonth()){
+                            td.style.color = 'gray';
+                        }
+                    } 
+                }
+                div.appendChild(table)
+            }
+
+            // 添加日历标题
+            this.showToolbar = function(){
+                var bar = document.createElement('div');
+                bar.style.color = 'white';
+                bar.style.fontSize = '30px';
+                bar.style.padding = '20px';
+                bar.innerHTML = this.currentMonth.getFullYear()+'年'+(this.currentMonth.getMonth()+1)+'月';
+                div.appendChild(bar);
+
+                // 切换至下个月
+                var next = document.createElement('span')
+                next.innerHTML = '&nbsp;&nbsp;&gt;'
+                next.style.float = 'right';
+                next.style.cursor = 'pointer';
+                bar.appendChild(next);
+
+                var calender = this;
+                next.onclick = function(){
+                    var month = calender.currentMonth.getMonth();
+                    month++;
+                    calender.currentMonth.setMonth(month);
+                    document.body.innerHTML = '';
+                    calender.show();
+                }
+
+                // 切换至上个月
+                var prev = document.createElement('span')
+                prev.innerHTML = '&nbsp;&nbsp;&lt;'
+                prev.style.float = 'right';
+                prev.style.cursor = 'pointer';
+                bar.appendChild(prev);
+
+                var calender = this;
+                prev.onclick = function(){
+                    var month = calender.currentMonth.getMonth();
+                    month--;
+                    calender.currentMonth.setMonth(month);
+                    document.body.innerHTML = '';
+                    calender.show();
+                }
+            }
+            this.show = function(){
+                this.showCalenderMain();
+                this.showToolbar();
+                this.showHeader();
+                this.showBody();
+            }
+        }
+
+        var calen = new Calender();
+        calen.show();
+    </script>
+</body>
+</html>
